@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Walterlv.Events
 {
@@ -15,7 +12,7 @@ namespace Walterlv.Events
             _chainStepDictionary = nodes.ToDictionary(x => x, x => 0);
         }
 
-        internal void Step()
+        internal void Step<T>(T node) where T : DeclarationChainNode
         {
             
         }

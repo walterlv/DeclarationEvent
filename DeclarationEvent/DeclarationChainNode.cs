@@ -1,15 +1,37 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Walterlv.Events
 {
-    /// <summary>
-    /// Declaration event Chain Node.
-    /// </summary>
     public abstract class DeclarationChainNode
     {
+        protected ReadOnlyCollection<DE> Infos { get; private set; }
+
         protected DeclarationChainNode(IList<DE> infos)
         {
+            Infos = new ReadOnlyCollection<DE>(infos);
         }
+
+        internal bool CanPassStep(DeclarationChainNode node)
+        {
+            return PassStep(node);
+        }
+
+        protected abstract bool PassStep(DeclarationChainNode node);
+    }
+
+    public abstract class DeclarationChainNode<T> : DeclarationChainNode where T : DeclarationChainNode
+    {
+        protected DeclarationChainNode(IList<DE> infos) : base(infos)
+        {
+        }
+
+        protected sealed override bool PassStep(DeclarationChainNode node)
+        {
+            return PassStepCore((T) node);
+        }
+
+        protected abstract bool PassStepCore(DeclarationChainNode node);
     }
 
     public delegate IEnumerable<DeclarationChainNode> CreateNodeCallback(DE[] infos);
@@ -23,6 +45,11 @@ namespace Walterlv.Events
         public DownChainNode(params DE[] infos) : base(infos)
         {
         }
+
+        protected override bool PassStep(DeclarationChainNode node)
+        {
+            return true;
+        }
     }
 
     public sealed class MoveChainNode : DeclarationChainNode
@@ -34,6 +61,11 @@ namespace Walterlv.Events
         public MoveChainNode(params DE[] infos) : base(infos)
         {
         }
+
+        protected override bool PassStep(DeclarationChainNode node)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
     public sealed class UpChainNode : DeclarationChainNode
@@ -44,6 +76,27 @@ namespace Walterlv.Events
 
         public UpChainNode(params DE[] infos) : base(infos)
         {
+        }
+
+        protected override bool PassStep(DeclarationChainNode node)
+        {
+            return true;
+        }
+    }
+
+    public sealed class DelayChainNode : DeclarationChainNode<DelayChainNode>
+    {
+        public DelayChainNode(IList<DE> infos) : base(infos)
+        {
+        }
+
+        public DelayChainNode(params DE[] infos) : base(infos)
+        {
+        }
+
+        protected override bool PassStepCore(DeclarationChainNode node)
+        {
+            return true;
         }
     }
 }

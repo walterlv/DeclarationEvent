@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace Walterlv.Events
 {
@@ -26,8 +25,8 @@ namespace Walterlv.Events
 
         protected sealed override IEnumerable<DeclarationChainNode> DefineChain()
         {
-            yield return new DownChainNode();
-            yield return new MoveChainNode();
+            yield return new DownChainNode(DE.Single);
+            yield return new DelayChainNode(DE.Long);
         }
     }
 
@@ -37,7 +36,9 @@ namespace Walterlv.Events
 
         protected override IEnumerable<DeclarationChainNode> DefineChain()
         {
-            return Enumerable.Empty<DeclarationChainNode>();
+            yield return new DownChainNode(DE.Single);
+            yield return new DelayChainNode(DE.Long);
+            yield return new UpChainNode(DE.Single);
         }
     }
 }
