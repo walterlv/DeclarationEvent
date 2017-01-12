@@ -51,6 +51,8 @@
     <Compile Include="BasicWpfEvents\DeviceInputEventArgs.cs" />
     <Compile Include="BasicWpfEvents\DeviceInputSource.cs" />
     <Compile Include="BasicWpfEvents\DeviceType.cs" />
+    <Compile Include="DeclarationChainCollection.cs" />
+    <Compile Include="DeclarationChainMarkupConverter.cs" />
     <Compile Include="DeclarationChainNode.cs" />
     <Compile Include="DeclarationChain.cs" />
     <Compile Include="DeclarationEvent.cs" />

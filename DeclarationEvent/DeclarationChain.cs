@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 
 namespace Walterlv.Events
 {
@@ -8,27 +10,37 @@ namespace Walterlv.Events
     /// </summary>
     public class DeclarationChain : ICollection<DeclarationChainNode>
     {
-        private readonly List<DeclarationChainNode> _chains = new List<DeclarationChainNode>();
-        
+        private readonly List<DeclarationChainNode> _chains;
+
+        public DeclarationChain()
+        {
+            _chains = new List<DeclarationChainNode>();
+        }
+
+        public DeclarationChain(IEnumerable<DeclarationChainNode> nodes)
+        {
+            _chains = nodes.ToList();
+        }
+
         private void AddInner(DeclarationChainNode node)
         {
             _chains.Add(node);
         }
-        
+
         public void Add(DeclarationChainNode node)
         {
             AddInner(node);
         }
-        
-        public DeclarationChain Down(params DM[] metas)
+
+        public DeclarationChain Down(params DM[] metadataList)
         {
-            AddInner(new DownChainNode());
+            AddInner(new DownChainNode(metadataList));
             return this;
         }
 
-        public DeclarationChain Up(params DM[] metas)
+        public DeclarationChain Up(params DM[] metadataList)
         {
-            AddInner(new UpChainNode());
+            AddInner(new UpChainNode(metadataList));
             return this;
         }
 

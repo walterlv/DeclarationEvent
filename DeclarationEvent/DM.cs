@@ -14,5 +14,10 @@ namespace Walterlv.Events
         {
             
         }
+
+        internal static DM Parse(string text)
+        {
+            return new DM();
+        }
     }
 }

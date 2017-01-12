@@ -13,7 +13,6 @@ namespace Cvte.DEDemo
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-
         }
     }
 }
