@@ -9,38 +9,9 @@ namespace Walterlv.Events
     /// </summary>
     public abstract class DeclarationChainNode
     {
-        private static readonly Dictionary<string, CreateNodeCallback>
-            ConverterDictionary = new Dictionary<string, CreateNodeCallback>
-            {
-                {"Down", data => new DeclarationChainNode[] {new DownChainNode(data)}},
-                {"Move", data => new DeclarationChainNode[] {new MoveChainNode(data)}},
-                {"Up", data => new DeclarationChainNode[] {new UpChainNode(data)}},
-            };
-
-        internal static IEnumerable<DeclarationChainNode> CreateNodes(string key, IEnumerable<DE> infos)
+        protected static void Register(string name, Type ownerType, CreateNodeCallback createNode)
         {
-            CreateNodeCallback func;
-            if (ConverterDictionary.TryGetValue(key, out func))
-            {
-                return func(infos as DE[] ?? infos.ToArray());
-            }
-            return Enumerable.Empty<DeclarationChainNode>();
-        }
-
-        public static void Register(string name, Type ownerType, CreateNodeCallback createNode)
-        {
-            if (name == null) throw new ArgumentNullException(nameof(name));
-            if (createNode == null) throw new ArgumentNullException(nameof(createNode));
-            if (ConverterDictionary.ContainsKey(name))
-            {
-                throw new ArgumentException($"Key \"{name}\" already exists", nameof(name));
-            }
-
-            ConverterDictionary.Add(name, createNode);
-        }
-
-        static DeclarationChainNode()
-        {
+            DeclarationChain.Register(name, ownerType, createNode);
         }
 
         protected DeclarationChainNode(IList<DE> infos)

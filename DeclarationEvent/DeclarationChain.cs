@@ -1,6 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 
@@ -9,7 +9,7 @@ namespace Walterlv.Events
     /// <summary>
     /// Declaration Event Chain.
     /// </summary>
-    [DebuggerDisplay("{DebuggerDisplay}")]
+    [DebuggerDisplay("{" + nameof(DebuggerDisplay) + "}")]
     public class DeclarationChain : ICollection<DeclarationChainNode>
     {
         private readonly List<DeclarationChainNode> _chains;
@@ -24,32 +24,49 @@ namespace Walterlv.Events
             _chains = nodes.ToList();
         }
 
-        private void AddInner(DeclarationChainNode node)
+        public void Add(DeclarationChainNode node)
         {
             _chains.Add(node);
         }
 
-        public void Add(DeclarationChainNode node)
+        #region Extensions
+
+        private static readonly Dictionary<string, CreateNodeCallback>
+            ConverterDictionary = new Dictionary<string, CreateNodeCallback>
+            {
+                {"Down", data => new DeclarationChainNode[] {new DownChainNode(data)}},
+                {"Move", data => new DeclarationChainNode[] {new MoveChainNode(data)}},
+                {"Up", data => new DeclarationChainNode[] {new UpChainNode(data)}},
+            };
+
+        internal static IEnumerable<DeclarationChainNode> CreateNodes(string key, IEnumerable<DE> infos)
         {
-            AddInner(node);
+            CreateNodeCallback func;
+            if (ConverterDictionary.TryGetValue(key, out func))
+            {
+                return func(infos as DE[] ?? infos.ToArray());
+            }
+            return Enumerable.Empty<DeclarationChainNode>();
         }
 
-        public DeclarationChain Down(params DE[] infos)
+        public static void Register(string name, Type ownerType, CreateNodeCallback createNode)
         {
-            AddInner(new DownChainNode(infos));
-            return this;
+            if (name == null) throw new ArgumentNullException(nameof(name));
+            if (createNode == null) throw new ArgumentNullException(nameof(createNode));
+            if (ConverterDictionary.ContainsKey(name))
+            {
+                throw new ArgumentException($"Key \"{name}\" already exists", nameof(name));
+            }
+
+            ConverterDictionary.Add(name, createNode);
         }
 
-        public DeclarationChain Up(params DE[] infos)
-        {
-            AddInner(new UpChainNode(infos));
-            return this;
-        }
+        #endregion
 
         #region Debugger
 
         private string DebuggerDisplay => "DeclarationChain" + string.Join("-",
-            _chains.Select(x => x.GetType().Name.Replace("ChainNode", "")));
+                                              _chains.Select(x => x.GetType().Name.Replace("ChainNode", "")));
 
         #endregion
 

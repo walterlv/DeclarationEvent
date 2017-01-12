@@ -1,5 +1,5 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
+using Walterlv.Events;
 
 namespace Cvte.DEDemo
 {
@@ -13,6 +13,7 @@ namespace Cvte.DEDemo
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
+            DTest3.DeclareEvents(new DC().Down().Up());
         }
     }
 }

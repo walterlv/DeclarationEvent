@@ -46,20 +46,27 @@ namespace Walterlv.Events
             _eventProcessor = null;
         }
 
-        private Dictionary<DeclarationChainCollection, UIElement> _collectedChains;
+        private Dictionary<DeclarationChain, UIElement> _collectedChains;
+        private EventStateManager _collectedManager;
+        private EventStateManager _predefinedManager;
 
         private void OnInputStarted(object sender, DeviceInputStartedEventArgs e)
         {
             _collectedChains = EnumerateTree(e.OriginalSource, el =>
-            {
-                var collection = (DeclarationChainCollection) el.GetValue(DeclarationEvent.EnabledChainsProperty);
-                return new KeyValuePair<DeclarationChainCollection, UIElement>(collection, el);
-            }).Where(x => x.Key != null).ToDictionary(x => x.Key, x => x.Value);
+                {
+                    var collection = (DeclarationChainCollection) el.GetValue(DeclarationEvent.EnabledChainsProperty);
+                    return new KeyValuePair<DeclarationChainCollection, UIElement>(collection, el);
+                }).Where(x => x.Key != null)
+                .SelectMany(pair =>
+                    pair.Key.Select(chain => new KeyValuePair<DeclarationChain, UIElement>(chain, pair.Value)))
+                .ToDictionary(x => x.Key, x => x.Value);
+            _collectedManager = new EventStateManager(_collectedChains.Keys);
+            _predefinedManager = new EventStateManager(_collectedChains.Keys);
         }
 
         private void OnInputCompleted(object sender, DeviceInputCompletedEventArgs e)
         {
-
+            _collectedChains = null;
         }
 
         private void OnDown(object sender, DeviceInputEventArgs e)

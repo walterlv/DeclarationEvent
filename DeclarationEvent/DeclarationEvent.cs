@@ -30,7 +30,7 @@ namespace Walterlv.Events
             if (true.Equals(e.NewValue))
             {
                 var controller = new DeclarationEventController();
-                controller?.Attach(element);
+                controller.Attach(element);
             }
         }
 

@@ -6,13 +6,17 @@ namespace Walterlv.Events
 {
     public abstract class DeclarationEventBase
     {
+        protected static void Register(string name, Type ownerType, CreateNodeCallback createNode)
+        {
+            DeclarationChain.Register(name, ownerType, createNode);
+        }
     }
 
     public class HoldingEvent : DeclarationEventBase
     {
         static HoldingEvent()
         {
-            DeclarationChainNode.Register("Holding", typeof (HoldingEvent), CreateNode);
+            Register("Holding", typeof(HoldingEvent), CreateNode);
         }
 
         private static IEnumerable<DeclarationChainNode> CreateNode(DE[] infos)
@@ -30,7 +34,7 @@ namespace Walterlv.Events
     {
         static TappedEvent()
         {
-            DeclarationChainNode.Register("Tapped", typeof (TappedEvent), CreateNode);
+            Register("Tapped", typeof(TappedEvent), CreateNode);
         }
 
         private static IEnumerable<DeclarationChainNode> CreateNode(DE[] infos)
