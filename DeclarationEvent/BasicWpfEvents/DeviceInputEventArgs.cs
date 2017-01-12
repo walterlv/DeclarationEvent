@@ -39,6 +39,8 @@ namespace Cvte.Windows.Input
         /// </summary>
         public Point Position { get; private set; }
 
+        public UIElement OriginalSource { get; internal set; }
+
         /// <summary>
         /// 创建 <see cref="DeviceInputEventArgs"/> 的新实例。
         /// </summary>
@@ -72,52 +74,6 @@ namespace Cvte.Windows.Input
     }
 
     /// <summary>
-    /// 为区分鼠标、触摸、触笔输入的拖拽事件提供事件处理函数。
-    /// </summary>
-    public delegate void DeviceInputDragEventHandler(object sender, DeviceInputDragEventArgs e);
-
-    /// <summary>
-    /// 为区分鼠标、触摸、触笔输入的拖拽事件提供事件参数。
-    /// </summary>
-    public class DeviceInputDragEventArgs : DeviceInputEventArgs
-    {
-
-        /// <summary>
-        /// 创建 <see cref="DeviceInputDragEventArgs"/> 的新实例。
-        /// </summary>
-        /// <param name="id">事件的设备 ID。</param>
-        /// <param name="type">设备类型的枚举值（鼠标、触摸、触笔）。</param>
-        /// <param name="button">事件操作中的设备操作按钮（鼠标左键、鼠标右键、触笔操作键、橡皮擦键）。</param>
-        /// <param name="originPosition">此事件相对于事件源的初始位置。</param>
-        /// <param name="currentPosition">事件相对于事件源的位置。</param>
-        /// <param name="offsetToOrigin">此事件相对于事件源的位置到初始位置的向量。</param>
-        /// <param name="offsetToLast">此事件相对于事件源的位置到上一次位置的向量。</param>
-        public DeviceInputDragEventArgs(int id, DeviceType type, DeviceButton button,
-            Point originPosition, Point currentPosition, Vector offsetToOrigin, Vector offsetToLast)
-            : base(id, currentPosition, type, button)
-        {
-            OriginPosition = originPosition;
-            OffsetToOrigin = offsetToOrigin;
-            OffsetToLast = offsetToLast;
-        }
-
-        /// <summary>
-        /// 获取此事件相对于事件源的初始位置。
-        /// </summary>
-        public Point OriginPosition { get; set; }
-
-        /// <summary>
-        /// 获取此事件相对于事件源的位置到初始位置的向量。
-        /// </summary>
-        public Vector OffsetToOrigin { get; set; }
-
-        /// <summary>
-        /// 获取此事件相对于事件源的位置到上一次位置的向量。
-        /// </summary>
-        public Vector OffsetToLast { get; set; }
-    }
-
-    /// <summary>
     /// 为区分鼠标、触摸、触笔输入的开始事件提供事件处理函数。
     /// </summary>
     public delegate void DeviceInputStartingEventHandler(object sender, DeviceInputStartingEventArgs e);
@@ -141,6 +97,8 @@ namespace Cvte.Windows.Input
         /// 获取事件的设备 ID。
         /// </summary>
         public int Id { get; private set; }
+
+        public UIElement OriginalSource { get; internal set; }
 
         /// <summary>
         /// 创建 <see cref="DeviceInputEventArgs"/> 的新实例。
@@ -181,6 +139,8 @@ namespace Cvte.Windows.Input
         /// </summary>
         public int Id { get; private set; }
 
+        public UIElement OriginalSource { get; internal set; }
+
         /// <summary>
         /// 创建 <see cref="DeviceInputEventArgs"/> 的新实例。
         /// </summary>
@@ -219,6 +179,8 @@ namespace Cvte.Windows.Input
         /// 获取或设置设备的虚拟类型（真实设备、虚拟设备）。
         /// </summary>
         public VirtualDeviceType VirtualType { get; private set; }
+
+        public UIElement OriginalSource { get; internal set; }
 
         /// <summary>
         /// 创建 <see cref="DeviceInputCompletedEventArgs"/> 的新实例。

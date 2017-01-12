@@ -30,6 +30,8 @@ namespace Walterlv.Events
         {
             _eventProcessor = new DeviceInputSource(_owner);
             _eventProcessor.Attach(OnDown, OnMove, OnUp);
+            _eventProcessor.InputStarted += OnInputStarted;
+            _eventProcessor.InputCompleted += OnInputCompleted;
             _eventProcessor.InputHover += OnHover;
         }
 
@@ -38,6 +40,17 @@ namespace Walterlv.Events
             _eventProcessor.InputHover -= OnHover;
             _eventProcessor.Detach();
             _eventProcessor = null;
+        }
+
+
+        private void OnInputStarted(object sender, DeviceInputStartedEventArgs e)
+        {
+            
+        }
+
+        private void OnInputCompleted(object sender, DeviceInputCompletedEventArgs e)
+        {
+
         }
 
         private void OnDown(object sender, DeviceInputEventArgs e)

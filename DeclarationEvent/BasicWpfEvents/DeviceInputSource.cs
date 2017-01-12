@@ -183,16 +183,25 @@ namespace Cvte.Windows.Input
                 DeviceButton button = GetDeviceButton(e);
                 if (!_currentDevices.Any())
                 {
-                    RaiseStarting(new DeviceInputStartingEventArgs(e.StylusDevice.Id, type, button));
+                    RaiseStarting(new DeviceInputStartingEventArgs(e.StylusDevice.Id, type, button)
+                    {
+                        OriginalSource = e.OriginalSource as UIElement,
+                    });
                     _currentContainer = InternalContainer;
                     CurrentCaptureTarget = CaptureTarget ?? (UIElement)e.OriginalSource;
                     _currentDeviceButton = button;
                     _currentDeviceType = type;
-                    RaiseStarted(new DeviceInputStartedEventArgs(e.StylusDevice.Id, type, button));
+                    RaiseStarted(new DeviceInputStartedEventArgs(e.StylusDevice.Id, type, button)
+                    {
+                        OriginalSource = e.OriginalSource as UIElement,
+                    });
                 }
 
                 DeviceInputEventArgs args = new DeviceInputEventArgs(e.StylusDevice.Id,
-                    e.GetPosition(_currentContainer), type, _currentDeviceButton);
+                    e.GetPosition(_currentContainer), type, _currentDeviceButton)
+                {
+                    OriginalSource = e.OriginalSource as UIElement,
+                };
                 if (_currentDeviceType == null || _currentDeviceType == type)
                 {
                     _currentDevices[e.StylusDevice.Id] = args;
@@ -232,7 +241,10 @@ namespace Cvte.Windows.Input
                             //    e.GetPosition(_currentContainer), type, _currentDeviceButton));
                             RaiseInputMove(new DeviceInputEventArgs(e.StylusDevice.Id,
                                 e.GetPosition(_currentContainer), type, _currentDeviceButton,
-                                e.GetStylusPoints(_currentContainer).Select(x => x.ToPoint())));
+                                e.GetStylusPoints(_currentContainer).Select(x => x.ToPoint()))
+                            {
+                                OriginalSource = e.OriginalSource as UIElement,
+                            });
                         }
                         catch (Exception)
                         {
@@ -246,7 +258,10 @@ namespace Cvte.Windows.Input
                         //    e.GetPosition(InternalContainer), type, DeviceButton.None));
                         RaiseInputHover(new DeviceInputEventArgs(e.StylusDevice.Id,
                             e.GetPosition(InternalContainer), type, DeviceButton.None,
-                            e.GetStylusPoints(_currentContainer).Select(x => x.ToPoint())));
+                            e.GetStylusPoints(_currentContainer).Select(x => x.ToPoint()))
+                        {
+                            OriginalSource = e.OriginalSource as UIElement,
+                        });
                     }
                 }
                 finally
@@ -273,7 +288,10 @@ namespace Cvte.Windows.Input
                     try
                     {
                         RaiseInputUp(new DeviceInputEventArgs(e.StylusDevice.Id,
-                            e.GetPosition(_currentContainer), type, _currentDeviceButton));
+                            e.GetPosition(_currentContainer), type, _currentDeviceButton)
+                        {
+                            OriginalSource = e.OriginalSource as UIElement,
+                        });
                     }
                     finally
                     {
@@ -311,7 +329,10 @@ namespace Cvte.Windows.Input
                         ? VirtualDeviceType.LostCapture
                         : VirtualDeviceType.Device;
                     _currentDevices.Clear();
-                    RaiseCompleted(new DeviceInputCompletedEventArgs(type, _currentDeviceButton, virtualType));
+                    RaiseCompleted(new DeviceInputCompletedEventArgs(type, _currentDeviceButton, virtualType)
+                    {
+                        OriginalSource = e.OriginalSource as UIElement,
+                    });
                 }
             });
         }
@@ -371,16 +392,25 @@ namespace Cvte.Windows.Input
                 DeviceButton button = GetDeviceButton(e);
                 if (!_currentDevices.Any())
                 {
-                    RaiseStarting(new DeviceInputStartingEventArgs(-1, DeviceType.Mouse, button));
+                    RaiseStarting(new DeviceInputStartingEventArgs(-1, DeviceType.Mouse, button)
+                    {
+                        OriginalSource = e.OriginalSource as UIElement,
+                    });
                     _currentContainer = InternalContainer;
                     CurrentCaptureTarget = CaptureTarget ?? (IInputElement)e.OriginalSource;
                     _currentDeviceButton = button;
                     _currentDeviceType = DeviceType.Mouse;
-                    RaiseStarted(new DeviceInputStartedEventArgs(-1, DeviceType.Mouse, button));
+                    RaiseStarted(new DeviceInputStartedEventArgs(-1, DeviceType.Mouse, button)
+                    {
+                        OriginalSource = e.OriginalSource as UIElement,
+                    });
                 }
 
                 DeviceInputEventArgs args = new DeviceInputEventArgs(-1,
-                    e.GetPosition(_currentContainer), DeviceType.Mouse, _currentDeviceButton);
+                    e.GetPosition(_currentContainer), DeviceType.Mouse, _currentDeviceButton)
+                {
+                    OriginalSource = e.OriginalSource as UIElement,
+                };
                 _currentDevices[-1] = args;
 
                 try
@@ -410,7 +440,10 @@ namespace Cvte.Windows.Input
                     if (_currentDeviceType == DeviceType.Mouse)
                     {
                         args = new DeviceInputEventArgs(-1,
-                            e.GetPosition(_currentContainer), DeviceType.Mouse, _currentDeviceButton);
+                            e.GetPosition(_currentContainer), DeviceType.Mouse, _currentDeviceButton)
+                        {
+                            OriginalSource = e.OriginalSource as UIElement,
+                        };
                         _currentDevices[-1] = args;
                         try
                         {
@@ -425,7 +458,10 @@ namespace Cvte.Windows.Input
                     else
                     {
                         args = new DeviceInputEventArgs(-1,
-                            e.GetPosition(InternalContainer), DeviceType.Mouse, DeviceButton.None);
+                            e.GetPosition(InternalContainer), DeviceType.Mouse, DeviceButton.None)
+                        {
+                            OriginalSource = e.OriginalSource as UIElement,
+                        };
                         RaiseInputHover(args);
                     }
                 }
@@ -444,7 +480,10 @@ namespace Cvte.Windows.Input
                 if (_currentDeviceType == DeviceType.Mouse)
                 {
                     DeviceInputEventArgs args = new DeviceInputEventArgs(-1,
-                        e.GetPosition(_currentContainer), DeviceType.Mouse, _currentDeviceButton);
+                        e.GetPosition(_currentContainer), DeviceType.Mouse, _currentDeviceButton)
+                    {
+                        OriginalSource = e.OriginalSource as UIElement,
+                    };
                     _currentDevices.Remove(-1);
                     try
                     {
@@ -482,7 +521,10 @@ namespace Cvte.Windows.Input
                         ? VirtualDeviceType.LostCapture
                         : VirtualDeviceType.Device;
                     _currentDevices.Clear();
-                    RaiseCompleted(new DeviceInputCompletedEventArgs(type, _currentDeviceButton, virtualType));
+                    RaiseCompleted(new DeviceInputCompletedEventArgs(type, _currentDeviceButton, virtualType)
+                    {
+                        OriginalSource = e.OriginalSource as UIElement,
+                    });
                 }
             });
         }
