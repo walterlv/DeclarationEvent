@@ -10,7 +10,7 @@
         <Grid x:Name="DTest1" Background="Tomato" Margin="48">
             <Border x:Name="DTest2" Width="200" Height="80" Background="ForestGreen"
                     HorizontalAlignment="Left" VerticalAlignment="Top"
-                    de:DeclarationEvent.EnabledChains="Down-Delay,Down-Up">
+                    de:DeclarationEvent.EnabledChains="Down-Move,Down-Up">
                 <UIElement.RenderTransform>
                     <TranslateTransform X="100" Y="60"/>
                 </UIElement.RenderTransform>

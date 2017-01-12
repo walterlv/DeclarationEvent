@@ -7,17 +7,14 @@ namespace Walterlv.Events
     /// <summary>
     /// Declaration event chain node Extra info.
     /// </summary>
-    public class DE
+    public enum DE
     {
-        [Flags]
-        private enum Flags
-        {
-            
-        }
+        ShortTime,
+        LongTime,
+    }
 
-        internal static DE Parse(string text)
-        {
-            return new DE();
-        }
+    public class DeclarationNodeExtra
+    {
+        internal static readonly DE[] Empty = new DE[0];
     }
 }

@@ -25,7 +25,13 @@ namespace Walterlv.Events
                 var chainNodeStrings = chainString.Split(new[] {'-'}, StringSplitOptions.RemoveEmptyEntries);
                 var nodes = chainNodeStrings.Aggregate(new List<DeclarationChainNode>(), (list, nodeString) =>
                 {
-                    list.AddRange(CreateNodes(nodeString));
+                    var singleWordNodes = CreateNodes(nodeString);
+                    int count = list.Count;
+                    list.AddRange(singleWordNodes);
+                    if (count == list.Count)
+                    {
+                        throw new ArgumentException($"Cannot recognize \"{nodeString}\" as {nameof(DeclarationChainNode)}.");
+                    }
                     return list;
                 });
                 chains.Add(new DeclarationChain(nodes));
@@ -38,7 +44,7 @@ namespace Walterlv.Events
         {
             var parts = nodeString.Split(new[] {'(', ')', '|'}, StringSplitOptions.RemoveEmptyEntries);
             var key = parts[0].Trim();
-            var infos = parts.Skip(1).Select(x => DE.Parse(x.Trim()));
+            var infos = parts.Skip(1).Select(x => (DE) Enum.Parse(typeof(DE), x.Trim()));
             return DeclarationChainNode.CreateNodes(key, infos);
         }
     }

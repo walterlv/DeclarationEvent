@@ -1,5 +1,9 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Windows;
+using System.Windows.Media;
 using Cvte.Windows.Input;
 
 namespace Walterlv.Events
@@ -42,10 +46,15 @@ namespace Walterlv.Events
             _eventProcessor = null;
         }
 
+        private Dictionary<DeclarationChainCollection, UIElement> _collectedChains;
 
         private void OnInputStarted(object sender, DeviceInputStartedEventArgs e)
         {
-            
+            _collectedChains = EnumerateTree(e.OriginalSource, el =>
+            {
+                var collection = (DeclarationChainCollection) el.GetValue(DeclarationEvent.EnabledChainsProperty);
+                return new KeyValuePair<DeclarationChainCollection, UIElement>(collection, el);
+            }).Where(x => x.Key != null).ToDictionary(x => x.Key, x => x.Value);
         }
 
         private void OnInputCompleted(object sender, DeviceInputCompletedEventArgs e)
@@ -55,6 +64,7 @@ namespace Walterlv.Events
 
         private void OnDown(object sender, DeviceInputEventArgs e)
         {
+            
         }
 
         private void OnMove(object sender, DeviceInputEventArgs e)
@@ -67,6 +77,21 @@ namespace Walterlv.Events
 
         private void OnHover(object sender, DeviceInputEventArgs e)
         {
+        }
+
+        private static IEnumerable<T> EnumerateTree<T>(UIElement source, Func<UIElement, T> action)
+        {
+            DependencyObject d = source;
+            yield return action(source);
+            while (d != null)
+            {
+                d = VisualTreeHelper.GetParent(d);
+                var element = d as UIElement;
+                if (element != null)
+                {
+                    yield return action(element);
+                }
+            }
         }
     }
 }

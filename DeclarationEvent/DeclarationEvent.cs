@@ -22,13 +22,14 @@ namespace Walterlv.Events
         private static void OnIsHostChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             UIElement element = (UIElement) d;
-            var controller = (DeclarationEventController) element.GetValue(ControllerProperty);
             if (true.Equals(e.OldValue))
             {
+                var controller = (DeclarationEventController) element.GetValue(ControllerProperty);
                 controller?.Detach();
             }
             if (true.Equals(e.NewValue))
             {
+                var controller = new DeclarationEventController();
                 controller?.Attach(element);
             }
         }

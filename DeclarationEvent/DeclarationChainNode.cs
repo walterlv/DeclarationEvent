@@ -10,10 +10,12 @@ namespace Walterlv.Events
     public abstract class DeclarationChainNode
     {
         private static readonly Dictionary<string, CreateNodeCallback>
-            ConverterDictionary = new Dictionary<string, CreateNodeCallback>();
-
-        private static readonly Dictionary<Type, string>
-            NodeMetadataDictionary = new Dictionary<Type, string>();
+            ConverterDictionary = new Dictionary<string, CreateNodeCallback>
+            {
+                {"Down", data => new DeclarationChainNode[] {new DownChainNode(data)}},
+                {"Move", data => new DeclarationChainNode[] {new MoveChainNode(data)}},
+                {"Up", data => new DeclarationChainNode[] {new UpChainNode(data)}},
+            };
 
         internal static IEnumerable<DeclarationChainNode> CreateNodes(string key, IEnumerable<DE> infos)
         {
@@ -37,6 +39,10 @@ namespace Walterlv.Events
             ConverterDictionary.Add(name, createNode);
         }
 
+        static DeclarationChainNode()
+        {
+        }
+
         protected DeclarationChainNode(IList<DE> infos)
         {
 
@@ -47,36 +53,33 @@ namespace Walterlv.Events
 
     public sealed class DownChainNode : DeclarationChainNode
     {
-        static DownChainNode()
+        public DownChainNode(IList<DE> infos) : base(infos)
         {
-            Register("Down", typeof(DownChainNode), data => new DeclarationChainNode[] {new DownChainNode(data)});
         }
 
-        public DownChainNode(IList<DE> infos) : base(infos)
+        public DownChainNode(params DE[] infos) : base(infos)
         {
         }
     }
 
     public sealed class UpChainNode : DeclarationChainNode
     {
-        static UpChainNode()
+        public UpChainNode(IList<DE> infos) : base(infos)
         {
-            Register("Up", typeof(UpChainNode), data => new DeclarationChainNode[] {new UpChainNode(data)});
         }
 
-        public UpChainNode(IList<DE> infos) : base(infos)
+        public UpChainNode(params DE[] infos) : base(infos)
         {
         }
     }
 
     public sealed class MoveChainNode : DeclarationChainNode
     {
-        static MoveChainNode()
+        public MoveChainNode(IList<DE> infos) : base(infos)
         {
-            Register("Move", typeof(MoveChainNode), data => new DeclarationChainNode[] {new MoveChainNode(data)});
         }
 
-        public MoveChainNode(IList<DE> infos) : base(infos)
+        public MoveChainNode(params DE[] infos) : base(infos)
         {
         }
     }
