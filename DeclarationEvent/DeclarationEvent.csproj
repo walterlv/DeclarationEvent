@@ -48,7 +48,15 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DE.cs" />
+    <Compile Include="BasicWpfEvents\DeviceInputEventArgs.cs" />
+    <Compile Include="BasicWpfEvents\DeviceInputSource.cs" />
+    <Compile Include="BasicWpfEvents\DeviceType.cs" />
+    <Compile Include="DeclarationChainNode.cs" />
+    <Compile Include="DeclarationChain.cs" />
+    <Compile Include="DeclarationEvent.cs" />
+    <Compile Include="DeclarationEventController.cs" />
+    <Compile Include="DeclarationEventMetadata.cs" />
+    <Compile Include="DM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

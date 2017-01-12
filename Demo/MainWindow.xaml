@@ -3,9 +3,18 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:de="clr-namespace:Walterlv.Events;assembly=DeclarationEvent"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        
+    <Grid de:DeclarationEvent.IsHost="True">
+        <Grid x:Name="DTest1" Background="Tomato" Margin="48">
+            <Border x:Name="DTest2" Width="200" Height="80" Background="ForestGreen"
+                    HorizontalAlignment="Left" VerticalAlignment="Top">
+                <UIElement.RenderTransform>
+                    <TranslateTransform X="100" Y="60"/>
+                </UIElement.RenderTransform>
+                <Rectangle x:Name="DTest3" Fill="DarkOrange" Width="80" Height="40"/>
+            </Border>
+        </Grid>
     </Grid>
 </Window>
