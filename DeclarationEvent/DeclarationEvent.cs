@@ -38,17 +38,17 @@ namespace Walterlv.Events
 
         public static readonly DependencyProperty EnabledChainsProperty =
             DependencyProperty.RegisterAttached(
-                "EnabledChains", typeof (ICollection<DeclarationChain>), typeof (DeclarationEvent),
-                new PropertyMetadata(default(ICollection<DeclarationChain>)));
+                "EnabledChains", typeof (DeclarationChainCollection), typeof (DeclarationEvent),
+                new PropertyMetadata(default(DeclarationChainCollection)));
 
-        public static ICollection<DeclarationChain> GetEnabledChains(DependencyObject element)
+        public static DeclarationChainCollection GetEnabledChains(DependencyObject element)
         {
-            var chains = (ICollection<DeclarationChain>) element.GetValue(EnabledChainsProperty) ??
-                         new List<DeclarationChain>();
+            var chains = (DeclarationChainCollection) element.GetValue(EnabledChainsProperty) ??
+                         new DeclarationChainCollection();
             return chains;
         }
 
-        public static void SetEnabledChains(DependencyObject element, ICollection<DeclarationChain> value)
+        public static void SetEnabledChains(DependencyObject element, DeclarationChainCollection value)
         {
             if (value == null)
             {

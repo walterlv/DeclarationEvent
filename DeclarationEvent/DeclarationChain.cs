@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Walterlv.Events
@@ -8,6 +9,7 @@ namespace Walterlv.Events
     /// <summary>
     /// Declaration Event Chain.
     /// </summary>
+    [DebuggerDisplay("{DebuggerDisplay}")]
     public class DeclarationChain : ICollection<DeclarationChainNode>
     {
         private readonly List<DeclarationChainNode> _chains;
@@ -43,6 +45,13 @@ namespace Walterlv.Events
             AddInner(new UpChainNode(metadataList));
             return this;
         }
+
+        #region Debugger
+
+        private string DebuggerDisplay => "DeclarationChain" + string.Join("-",
+            _chains.Select(x => x.GetType().Name.Replace("ChainNode", "")));
+
+        #endregion
 
         #region Collection
 
