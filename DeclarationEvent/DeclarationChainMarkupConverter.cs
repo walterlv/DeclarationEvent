@@ -45,7 +45,7 @@ namespace Walterlv.Events
             var parts = nodeString.Split(new[] {'(', ')', '|'}, StringSplitOptions.RemoveEmptyEntries);
             var key = parts[0].Trim();
             var infos = parts.Skip(1).Select(x => (DE) Enum.Parse(typeof(DE), x.Trim()));
-            return DeclarationChain.CreateNodes(key, infos);
+            return DeclarationEvent.ConvertNodes(key, infos);
         }
     }
 }

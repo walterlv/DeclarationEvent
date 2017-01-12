@@ -1,30 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Walterlv.Events
 {
     public abstract class DeclarationEventBase
     {
-        protected static void Register(string name, Type ownerType, CreateNodeCallback createNode)
+        internal string GetName()
         {
-            DeclarationChain.Register(name, ownerType, createNode);
+            return Name;
         }
+
+        internal DeclarationChain GetChain()
+        {
+            return new DeclarationChain(DefineChain());
+        }
+
+        protected abstract string Name { get; }
+
+        protected abstract IEnumerable<DeclarationChainNode> DefineChain();
     }
 
     public class HoldingEvent : DeclarationEventBase
     {
-        static HoldingEvent()
-        {
-            Register("Holding", typeof(HoldingEvent), CreateNode);
-        }
+        protected override string Name => "Holding";
 
-        private static IEnumerable<DeclarationChainNode> CreateNode(DE[] infos)
+        protected sealed override IEnumerable<DeclarationChainNode> DefineChain()
         {
-            if (infos.Any())
-            {
-                throw new ArgumentException("HoldingEvent does not need any extra info.");
-            }
             yield return new DownChainNode();
             yield return new MoveChainNode();
         }
@@ -32,12 +33,9 @@ namespace Walterlv.Events
 
     public class TappedEvent : DeclarationEventBase
     {
-        static TappedEvent()
-        {
-            Register("Tapped", typeof(TappedEvent), CreateNode);
-        }
+        protected override string Name => "Tapped";
 
-        private static IEnumerable<DeclarationChainNode> CreateNode(DE[] infos)
+        protected override IEnumerable<DeclarationChainNode> DefineChain()
         {
             return Enumerable.Empty<DeclarationChainNode>();
         }

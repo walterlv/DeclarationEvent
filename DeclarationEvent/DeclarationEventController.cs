@@ -48,7 +48,7 @@ namespace Walterlv.Events
 
         private Dictionary<DeclarationChain, UIElement> _collectedChains;
         private EventStateManager _collectedManager;
-        private EventStateManager _predefinedManager;
+        private EventStateManager _knownManager;
 
         private void OnInputStarted(object sender, DeviceInputStartedEventArgs e)
         {
@@ -61,7 +61,7 @@ namespace Walterlv.Events
                     pair.Key.Select(chain => new KeyValuePair<DeclarationChain, UIElement>(chain, pair.Value)))
                 .ToDictionary(x => x.Key, x => x.Value);
             _collectedManager = new EventStateManager(_collectedChains.Keys);
-            _predefinedManager = new EventStateManager(_collectedChains.Keys);
+            _knownManager = new EventStateManager(DeclarationEvent.GetKnownEventChains());
         }
 
         private void OnInputCompleted(object sender, DeviceInputCompletedEventArgs e)

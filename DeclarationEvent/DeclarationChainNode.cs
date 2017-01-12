@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 
 namespace Walterlv.Events
 {
@@ -9,14 +7,8 @@ namespace Walterlv.Events
     /// </summary>
     public abstract class DeclarationChainNode
     {
-        protected static void Register(string name, Type ownerType, CreateNodeCallback createNode)
-        {
-            DeclarationChain.Register(name, ownerType, createNode);
-        }
-
         protected DeclarationChainNode(IList<DE> infos)
         {
-
         }
     }
 
@@ -33,17 +25,6 @@ namespace Walterlv.Events
         }
     }
 
-    public sealed class UpChainNode : DeclarationChainNode
-    {
-        public UpChainNode(IList<DE> infos) : base(infos)
-        {
-        }
-
-        public UpChainNode(params DE[] infos) : base(infos)
-        {
-        }
-    }
-
     public sealed class MoveChainNode : DeclarationChainNode
     {
         public MoveChainNode(IList<DE> infos) : base(infos)
@@ -51,6 +32,17 @@ namespace Walterlv.Events
         }
 
         public MoveChainNode(params DE[] infos) : base(infos)
+        {
+        }
+    }
+
+    public sealed class UpChainNode : DeclarationChainNode
+    {
+        public UpChainNode(IList<DE> infos) : base(infos)
+        {
+        }
+
+        public UpChainNode(params DE[] infos) : base(infos)
         {
         }
     }

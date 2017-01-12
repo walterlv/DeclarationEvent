@@ -1,9 +1,18 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
 
 namespace Walterlv.Events
 {
     public sealed class DeclarationEvent
     {
+        static DeclarationEvent()
+        {
+            Register(() => new HoldingEvent());
+            Register(() => new TappedEvent());
+        }
+
         public static readonly DependencyProperty IsHostProperty =
             DependencyProperty.RegisterAttached(
                 "IsHost", typeof (bool), typeof (DeclarationEvent),
@@ -61,5 +70,94 @@ namespace Walterlv.Events
         private static readonly DependencyProperty ControllerProperty = DependencyProperty.RegisterAttached(
             "Controller", typeof(DeclarationEventController), typeof(DeclarationEvent),
             new PropertyMetadata(default(DeclarationEventController)));
+
+        private static readonly Dictionary<string, CreateNodeCallback>
+            ConverterDictionary = new Dictionary<string, CreateNodeCallback>
+            {
+                {"Down", data => new DeclarationChainNode[] {new DownChainNode(data)}},
+                {"Move", data => new DeclarationChainNode[] {new MoveChainNode(data)}},
+                {"Up", data => new DeclarationChainNode[] {new UpChainNode(data)}},
+            };
+
+        private static readonly Dictionary<Type, DeclarationChain>
+            KnownEventDictionary = new Dictionary<Type, DeclarationChain>();
+
+        internal static IEnumerable<DeclarationChainNode> ConvertNodes(string key, IEnumerable<DE> infos)
+        {
+            CreateNodeCallback func;
+            if (ConverterDictionary.TryGetValue(key, out func))
+            {
+                return func(infos as DE[] ?? infos.ToArray());
+            }
+            return Enumerable.Empty<DeclarationChainNode>();
+        }
+
+        internal static DeclarationChain[] GetKnownEventChains()
+        {
+            return KnownEventDictionary.Values.ToArray();
+        }
+
+        public static void Register(Func<DeclarationEventBase> createDeclarationEvent)
+        {
+            if (createDeclarationEvent == null) throw new ArgumentNullException(nameof(createDeclarationEvent));
+
+            var declarationEvent = createDeclarationEvent.Invoke();
+            if (declarationEvent == null)
+            {
+                throw new InvalidOperationException("Delegate cannot return null.");
+            }
+            
+            var name = declarationEvent.GetName();
+            var type = declarationEvent.GetType();
+            var chain = declarationEvent.GetChain();
+
+            RegisterConverter(name, type, infos => chain);
+            RegisterKnownEvent(name, type, chain);
+        }
+
+        internal static void RegisterConverter(string name, Type ownerType, CreateNodeCallback createNode)
+        {
+            if (name == null) throw new ArgumentNullException(nameof(name));
+            if (ownerType == null) throw new ArgumentNullException(nameof(ownerType));
+            if (createNode == null) throw new ArgumentNullException(nameof(createNode));
+
+            if (ConverterDictionary.ContainsKey(name))
+            {
+                throw new ArgumentException(
+                    $"Key \"{name}\" already exists in DeclarationEvent Converters.",
+                    nameof(name));
+            }
+
+            ConverterDictionary.Add(name, createNode);
+        }
+
+        internal static void RegisterKnownEvent(string name, Type ownerType, DeclarationChain chain)
+        {
+            if (name == null) throw new ArgumentNullException(nameof(name));
+            if (ownerType == null) throw new ArgumentNullException(nameof(ownerType));
+            if (chain == null) throw new ArgumentNullException(nameof(chain));
+
+            if (KnownEventDictionary.ContainsKey(ownerType))
+            {
+                throw new ArgumentException(
+                    $"Type \"{ownerType}\" already exists in Declaration Known Events.",
+                    nameof(name));
+            }
+
+            KnownEventDictionary.Add(ownerType, chain);
+        }
+
+        private static void RegisterPrivate(Dictionary<string, CreateNodeCallback> dictionary,
+            string name, Type ownerType, CreateNodeCallback createNode)
+        {
+            if (name == null) throw new ArgumentNullException(nameof(name));
+            if (createNode == null) throw new ArgumentNullException(nameof(createNode));
+            if (dictionary.ContainsKey(name))
+            {
+                throw new ArgumentException($"Key \"{name}\" already exists", nameof(name));
+            }
+
+            dictionary.Add(name, createNode);
+        }
     }
 }
