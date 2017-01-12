@@ -38,8 +38,8 @@ namespace Walterlv.Events
         {
             var parts = nodeString.Split(new[] {'(', ')', '|'}, StringSplitOptions.RemoveEmptyEntries);
             var key = parts[0].Trim();
-            var metadataList = parts.Skip(1).Select(x => DM.Parse(x.Trim()));
-            return DeclarationEvent.CreateNodes(key, metadataList);
+            var infos = parts.Skip(1).Select(x => DE.Parse(x.Trim()));
+            return DeclarationChainNode.CreateNodes(key, infos);
         }
     }
 }

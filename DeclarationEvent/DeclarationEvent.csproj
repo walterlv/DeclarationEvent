@@ -56,9 +56,10 @@
     <Compile Include="DeclarationChainNode.cs" />
     <Compile Include="DeclarationChain.cs" />
     <Compile Include="DeclarationEvent.cs" />
+    <Compile Include="DeclarationEventBase.cs" />
     <Compile Include="DeclarationEventController.cs" />
     <Compile Include="DeclarationEventMetadata.cs" />
-    <Compile Include="DM.cs" />
+    <Compile Include="DE.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -5,9 +5,9 @@ using System;
 namespace Walterlv.Events
 {
     /// <summary>
-    /// Declaration event chain node Metadata.
+    /// Declaration event chain node Extra info.
     /// </summary>
-    public class DM
+    public class DE
     {
         [Flags]
         private enum Flags
@@ -15,9 +15,9 @@ namespace Walterlv.Events
             
         }
 
-        internal static DM Parse(string text)
+        internal static DE Parse(string text)
         {
-            return new DM();
+            return new DE();
         }
     }
 }

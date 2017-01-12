@@ -34,15 +34,15 @@ namespace Walterlv.Events
             AddInner(node);
         }
 
-        public DeclarationChain Down(params DM[] metadataList)
+        public DeclarationChain Down(params DE[] infos)
         {
-            AddInner(new DownChainNode(metadataList));
+            AddInner(new DownChainNode(infos));
             return this;
         }
 
-        public DeclarationChain Up(params DM[] metadataList)
+        public DeclarationChain Up(params DE[] infos)
         {
-            AddInner(new UpChainNode(metadataList));
+            AddInner(new UpChainNode(infos));
             return this;
         }
 
