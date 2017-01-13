@@ -31,10 +31,8 @@ namespace Walterlv.Events
             return PassStepCore((T) node);
         }
 
-        protected abstract bool PassStepCore(DeclarationChainNode node);
+        protected abstract bool PassStepCore(T node);
     }
-
-    public delegate IEnumerable<DeclarationChainNode> CreateNodeCallback(DE[] infos);
 
     public sealed class DownChainNode : DeclarationChainNode
     {
@@ -64,7 +62,7 @@ namespace Walterlv.Events
 
         protected override bool PassStep(DeclarationChainNode node)
         {
-            throw new System.NotImplementedException();
+            return true;
         }
     }
 
@@ -94,7 +92,7 @@ namespace Walterlv.Events
         {
         }
 
-        protected override bool PassStepCore(DeclarationChainNode node)
+        protected override bool PassStepCore(DelayChainNode node)
         {
             return true;
         }

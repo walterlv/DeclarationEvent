@@ -146,18 +146,7 @@ namespace Walterlv.Events
 
             KnownEventDictionary.Add(ownerType, chain);
         }
-
-        private static void RegisterPrivate(Dictionary<string, CreateNodeCallback> dictionary,
-            string name, Type ownerType, CreateNodeCallback createNode)
-        {
-            if (name == null) throw new ArgumentNullException(nameof(name));
-            if (createNode == null) throw new ArgumentNullException(nameof(createNode));
-            if (dictionary.ContainsKey(name))
-            {
-                throw new ArgumentException($"Key \"{name}\" already exists", nameof(name));
-            }
-
-            dictionary.Add(name, createNode);
-        }
     }
+
+    public delegate IEnumerable<DeclarationChainNode> CreateNodeCallback(DE[] infos);
 }
