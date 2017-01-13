@@ -7,7 +7,7 @@ namespace Walterlv.Events
     {
         protected ReadOnlyCollection<DE> Infos { get; private set; }
 
-        protected DeclarationChainNode(IList<DE> infos)
+        internal DeclarationChainNode(IList<DE> infos)
         {
             Infos = new ReadOnlyCollection<DE>(infos);
         }
@@ -22,7 +22,7 @@ namespace Walterlv.Events
 
     public abstract class DeclarationChainNode<T> : DeclarationChainNode where T : DeclarationChainNode
     {
-        protected DeclarationChainNode(IList<DE> infos) : base(infos)
+        internal DeclarationChainNode(IList<DE> infos) : base(infos)
         {
         }
 

@@ -1,21 +1,46 @@
 ﻿// ReSharper disable InconsistentNaming
 
 using System;
-using System.Collections.Generic;
+using Cvte.Windows.Input;
 
 namespace Walterlv.Events
 {
     /// <summary>
     /// Declaration event chain node Extra info.
     /// </summary>
-    public class DE
+    public abstract class DE
     {
         internal static readonly DE[] Empty = new DE[0];
 
-        public static PointerCountInfo Single = new PointerCountInfo(PointerCountInfo.CountType.Single);
+        public static DE Confirmed = new SignalInfo(SignalInfo.SignalType.Confirmed);
+        public static DE Optional = new SignalInfo(SignalInfo.SignalType.Optional);
 
-        public static DelayInfo Long = new DelayInfo(DelayInfo.DelayType.LongerThan);
-        public static DelayInfo Short = new DelayInfo(DelayInfo.DelayType.ShorterThan);
+        public static DE Single = new PointerCountInfo(PointerCountInfo.CountType.Single);
+        public static DE Merge = new PointerCountInfo(PointerCountInfo.CountType.Merged);
+        public static DE AllPointers = new PointerCountInfo(PointerCountInfo.CountType.All);
+
+        public static DE Near = new MoveInfo(MoveInfo.DistanceType.NearerThan);
+        public static DE Far = new MoveInfo(MoveInfo.DistanceType.FartherThan);
+
+        public static DE Long = new DelayInfo(DelayInfo.DelayType.LongerThan);
+        public static DE Short = new DelayInfo(DelayInfo.DelayType.ShorterThan);
+    }
+
+    internal sealed class SignalInfo : DE
+    {
+        internal enum SignalType
+        {
+            Unspecified,
+            Confirmed,
+            Optional,
+        }
+
+        public SignalType Signal { get; private set; }
+
+        public SignalInfo(SignalType signal)
+        {
+            Signal = signal;
+        }
     }
 
     public sealed class PointerCountInfo : DE
@@ -74,6 +99,49 @@ namespace Walterlv.Events
         }
     }
 
+    public sealed class MoveInfo : DE
+    {
+        public enum DistanceType
+        {
+            Unspecified,
+            NearerThan,
+            FartherThan,
+        }
+
+        public enum RangeType
+        {
+            Point,
+            Visual,
+        }
+
+        public static double GetDefaultDistance(DeviceType deviceType)
+        {
+            return 1;
+        }
+
+        public DistanceType DType { get; private set; }
+        public RangeType RType { get; private set; }
+        public double Distance { get; private set; }
+
+        public MoveInfo(DistanceType type)
+        {
+            DType = type;
+        }
+
+        public MoveInfo(DistanceType type, double distance)
+        {
+            DType = type;
+            Distance = distance;
+        }
+
+        public MoveInfo(DistanceType dtype, RangeType rtype, double distance)
+        {
+            DType = dtype;
+            RType = rtype;
+            Distance = distance;
+        }
+    }
+
     public sealed class DelayInfo : DE
     {
         public enum DelayType
@@ -82,8 +150,11 @@ namespace Walterlv.Events
             ShorterThan,
             LongerThan,
         }
-
-        public static TimeSpan DefaultDelay => TimeSpan.FromSeconds(0.8);
+        
+        public static TimeSpan GetDefaultDelay(DeviceType deviceType)
+        {
+            return TimeSpan.FromSeconds(0.8);
+        }
 
         public DelayType Type { get; private set; }
         public TimeSpan Delay { get; private set; }

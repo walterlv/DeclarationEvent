@@ -11,6 +11,7 @@ namespace Walterlv.Events
         {
             Register(() => new HoldingEvent());
             Register(() => new TappedEvent());
+            Register(() => new DragEvent());
         }
 
         public static readonly DependencyProperty IsHostProperty =

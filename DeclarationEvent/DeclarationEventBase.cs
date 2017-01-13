@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using static Walterlv.Events.DE;
 
 namespace Walterlv.Events
 {
@@ -25,8 +26,9 @@ namespace Walterlv.Events
 
         protected sealed override IEnumerable<DeclarationChainNode> DefineChain()
         {
-            yield return new DownChainNode(DE.Single);
-            yield return new DelayChainNode(DE.Long);
+            yield return new DownChainNode(Single);
+            yield return new MoveChainNode(Near, Optional);
+            yield return new DelayChainNode(Long);
         }
     }
 
@@ -36,9 +38,22 @@ namespace Walterlv.Events
 
         protected override IEnumerable<DeclarationChainNode> DefineChain()
         {
-            yield return new DownChainNode(DE.Single);
-            yield return new DelayChainNode(DE.Long);
-            yield return new UpChainNode(DE.Single);
+            yield return new DownChainNode(Single);
+            yield return new MoveChainNode(Near, Optional);
+            yield return new DelayChainNode(Short, Optional);
+            yield return new UpChainNode(Single);
+        }
+    }
+
+    public class DragEvent : DeclarationEventBase
+    {
+        protected override string Name => "Drag";
+
+        protected override IEnumerable<DeclarationChainNode> DefineChain()
+        {
+            yield return new DownChainNode(Merge);
+            yield return new MoveChainNode(Far, Confirmed);
+            yield return new UpChainNode(Merge);
         }
     }
 }

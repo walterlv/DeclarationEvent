@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Cvte.Windows.Input;
 
 namespace Walterlv.Events
@@ -50,20 +51,29 @@ namespace Walterlv.Events
         private EventStateManager _collectedManager;
         private EventStateManager _knownManager;
         private Dictionary<int, DeviceInfo> _pressingDevices;
+        private DispatcherTimer _timer;
 
         private void OnInputStarted(object sender, DeviceInputStartedEventArgs e)
         {
             _collectedChains = EnumerateTree(e.OriginalSource, el =>
-                {
-                    var collection = (DeclarationChainCollection) el.GetValue(DeclarationEvent.EnabledChainsProperty);
-                    return new KeyValuePair<DeclarationChainCollection, UIElement>(collection, el);
-                }).Where(x => x.Key != null)
-                .SelectMany(pair =>
-                    pair.Key.Select(chain => new KeyValuePair<DeclarationChain, UIElement>(chain, pair.Value)))
+            {
+                var collection = (DeclarationChainCollection) el.GetValue(DeclarationEvent.EnabledChainsProperty);
+                return new KeyValuePair<DeclarationChainCollection, UIElement>(collection, el);
+            }).Where(x => x.Key != null).SelectMany(pair =>
+                pair.Key.Select(chain => new KeyValuePair<DeclarationChain, UIElement>(chain, pair.Value)))
                 .ToDictionary(x => x.Key, x => x.Value);
+
             _collectedManager = new EventStateManager(_collectedChains.Keys);
             _knownManager = new EventStateManager(DeclarationEvent.GetKnownEventChains());
             _pressingDevices = new Dictionary<int, DeviceInfo>();
+
+            _timer?.Stop();
+            _timer = new DispatcherTimer(DispatcherPriority.Send)
+            {
+                Interval = DelayInfo.GetDefaultDelay(e.Type),
+            };
+            _timer.Tick += Timer_Tick;
+            _timer.Start();
         }
 
         private void OnInputCompleted(object sender, DeviceInputCompletedEventArgs e)
@@ -72,6 +82,15 @@ namespace Walterlv.Events
             _collectedManager = null;
             _knownManager = null;
             _pressingDevices = null;
+
+            _timer.Tick -= Timer_Tick;
+            _timer.Stop();
+            _timer = null;
+        }
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+
         }
 
         private void OnDown(object sender, DeviceInputEventArgs e)
@@ -86,7 +105,7 @@ namespace Walterlv.Events
         private void OnMove(object sender, DeviceInputEventArgs e)
         {
             var elapsed = DateTime.Now - GetPressingInfo(e.Id, x => x.DownTime);
-            var node = elapsed > DelayInfo.DefaultDelay ? new MoveChainNode(DE.Long) : new MoveChainNode(DE.Short);
+            var node = elapsed > DelayInfo.GetDefaultDelay(e.Type) ? new MoveChainNode(DE.Long) : new MoveChainNode(DE.Short);
 
             _collectedManager.Step(node);
             _knownManager.Step(node);
