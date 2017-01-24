@@ -10,7 +10,7 @@ namespace Walterlv.Events
     /// Declaration Event Chain.
     /// </summary>
     [DebuggerDisplay("{" + nameof(DebuggerDisplay) + "}")]
-    public class DeclarationChain : ICollection<DeclarationChainNode>
+    public class DeclarationChain : IList<DeclarationChainNode>
     {
         private readonly List<DeclarationChainNode> _chains;
 
@@ -23,6 +23,14 @@ namespace Walterlv.Events
         {
             _chains = nodes.ToList();
         }
+
+        public DeclarationChainNode this[int index]
+        {
+            get { return _chains[index]; }
+            set { _chains[index] = value; }
+        }
+
+        public int Count => _chains.Count;
 
         public void Add(DeclarationChainNode node)
         {
@@ -38,13 +46,26 @@ namespace Walterlv.Events
 
         #region Collection
 
-        int ICollection<DeclarationChainNode>.Count => _chains.Count;
-
         bool ICollection<DeclarationChainNode>.IsReadOnly => false;
+
+        int IList<DeclarationChainNode>.IndexOf(DeclarationChainNode node)
+        {
+            return _chains.IndexOf(node);
+        }
+
+        void IList<DeclarationChainNode>.Insert(int index, DeclarationChainNode node)
+        {
+            _chains.Insert(index, node);
+        }
 
         bool ICollection<DeclarationChainNode>.Remove(DeclarationChainNode node)
         {
             return _chains.Remove(node);
+        }
+
+        void IList<DeclarationChainNode>.RemoveAt(int index)
+        {
+            _chains.RemoveAt(index);
         }
 
         void ICollection<DeclarationChainNode>.Clear()

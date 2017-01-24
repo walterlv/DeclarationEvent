@@ -53,6 +53,7 @@ namespace Walterlv.Events
         {
             yield return new DownChainNode(Merge);
             yield return new MoveChainNode(Far, Confirmed);
+            yield return new MoveChainNode(Optional);
             yield return new UpChainNode(Merge);
         }
     }

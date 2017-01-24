@@ -63,7 +63,7 @@ namespace Walterlv.Events
                 pair.Key.Select(chain => new KeyValuePair<DeclarationChain, UIElement>(chain, pair.Value)))
                 .ToDictionary(x => x.Key, x => x.Value);
 
-            _collectedManager = new EventStateManager(_collectedChains.Keys);
+            _collectedManager = new EventStateManager(_collectedChains.Keys) {Confirmed = OnConfirmed};
             _knownManager = new EventStateManager(DeclarationEvent.GetKnownEventChains());
             _pressingDevices = new Dictionary<int, DeviceInfo>();
 
@@ -90,7 +90,9 @@ namespace Walterlv.Events
 
         private void Timer_Tick(object sender, EventArgs e)
         {
+            _timer.Tick -= Timer_Tick;
 
+            
         }
 
         private void OnDown(object sender, DeviceInputEventArgs e)
@@ -120,6 +122,12 @@ namespace Walterlv.Events
 
         private void OnHover(object sender, DeviceInputEventArgs e)
         {
+        }
+
+        private void OnConfirmed(DeclarationChain chain)
+        {
+            var source = _collectedChains[chain];
+
         }
 
         private T GetPressingInfo<T>(int id, Func<DeviceInfo, T> get)

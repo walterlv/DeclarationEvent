@@ -76,8 +76,9 @@ namespace Walterlv.Events
             ConverterDictionary = new Dictionary<string, CreateNodeCallback>
             {
                 {"Down", data => new DeclarationChainNode[] {new DownChainNode(data)}},
-                {"Move", data => new DeclarationChainNode[] {new MoveChainNode(data)}},
                 {"Up", data => new DeclarationChainNode[] {new UpChainNode(data)}},
+                {"Move", data => new DeclarationChainNode[] {new MoveChainNode(data)}},
+                {"Delay", data => new DeclarationChainNode[] {new DelayChainNode(data)}},
             };
 
         private static readonly Dictionary<Type, DeclarationChain>

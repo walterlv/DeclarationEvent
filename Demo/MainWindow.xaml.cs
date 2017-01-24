@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using Walterlv.Events;
+using static Walterlv.Events.DE;
 
 namespace Cvte.DEDemo
 {
@@ -13,7 +14,15 @@ namespace Cvte.DEDemo
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            DTest3.DeclareEvents(new DC().Down().Up());
+            DTest3.DeclareEvents(new DC().Down().Move(Optional, Near, Confirmed).Up());
+        }
+    }
+
+    public static class XxExtensions
+    {
+        public static DC Holding(this DC dc)
+        {
+            return dc;
         }
     }
 }

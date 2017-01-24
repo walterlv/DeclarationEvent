@@ -14,6 +14,7 @@ namespace Walterlv.Events
 
         public static DE Confirmed = new SignalInfo(SignalInfo.SignalType.Confirmed);
         public static DE Optional = new SignalInfo(SignalInfo.SignalType.Optional);
+        public static DE End = new SignalInfo(SignalInfo.SignalType.End);
 
         public static DE Single = new PointerCountInfo(PointerCountInfo.CountType.Single);
         public static DE Merge = new PointerCountInfo(PointerCountInfo.CountType.Merged);
@@ -33,6 +34,7 @@ namespace Walterlv.Events
             Unspecified,
             Confirmed,
             Optional,
+            End,
         }
 
         public SignalType Signal { get; private set; }

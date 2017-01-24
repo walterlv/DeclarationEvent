@@ -14,6 +14,12 @@ namespace Walterlv.Events
             return this;
         }
 
+        public DC Move(params DE[] infos)
+        {
+            _chain.Add(new MoveChainNode(infos));
+            return this;
+        }
+
         public DC Up(params DE[] infos)
         {
             _chain.Add(new UpChainNode(infos));

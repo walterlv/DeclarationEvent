@@ -12,26 +12,26 @@ namespace Walterlv.Events
             Infos = new ReadOnlyCollection<DE>(infos);
         }
 
-        internal bool CanPassStep(DeclarationChainNode node)
+        internal StateStep CanPassStep(DeclarationChainNode node)
         {
+            if (node.Infos.Contains(DE.Optional))
+            {
+                return StateStep.Ignore;
+            }
             return PassStep(node);
         }
 
-        protected abstract bool PassStep(DeclarationChainNode node);
-    }
-
-    public abstract class DeclarationChainNode<T> : DeclarationChainNode where T : DeclarationChainNode
-    {
-        internal DeclarationChainNode(IList<DE> infos) : base(infos)
-        {
-        }
-
-        protected sealed override bool PassStep(DeclarationChainNode node)
-        {
-            return PassStepCore((T) node);
-        }
-
-        protected abstract bool PassStepCore(T node);
+        /// <summary>
+        /// 派生类重写此方法时，决定参数 <paramref name="node"/> 的实例是否符合自身的要求。
+        /// 具体是指：参数表示实际发生的事件节点，自身表示预设的事件节点，此判断为决定实际发生的事件是否达到预设要求。
+        /// <para></para>
+        /// 如果达到要求，则返回 <see cref="StateStep.Pass"/>；
+        /// 如果无此要求，则返回 <see cref="StateStep.Ignore"/>；
+        /// 如果要求不满足，则返回 <see cref="StateStep.Abort"/>。
+        /// </summary>
+        /// <param name="node">实际发生的事件节点。</param>
+        /// <returns></returns>
+        protected abstract StateStep PassStep(DeclarationChainNode node);
     }
 
     public sealed class DownChainNode : DeclarationChainNode
@@ -44,9 +44,9 @@ namespace Walterlv.Events
         {
         }
 
-        protected override bool PassStep(DeclarationChainNode node)
+        protected override StateStep PassStep(DeclarationChainNode node)
         {
-            return true;
+            return StateStep.Pass;
         }
     }
 
@@ -60,9 +60,10 @@ namespace Walterlv.Events
         {
         }
 
-        protected override bool PassStep(DeclarationChainNode node)
+        protected override StateStep PassStep(DeclarationChainNode node)
         {
-            return true;
+
+            return StateStep.Pass;
         }
     }
 
@@ -76,13 +77,13 @@ namespace Walterlv.Events
         {
         }
 
-        protected override bool PassStep(DeclarationChainNode node)
+        protected override StateStep PassStep(DeclarationChainNode node)
         {
-            return true;
+            return StateStep.Pass;
         }
     }
 
-    public sealed class DelayChainNode : DeclarationChainNode<DelayChainNode>
+    public sealed class DelayChainNode : DeclarationChainNode
     {
         public DelayChainNode(IList<DE> infos) : base(infos)
         {
@@ -92,9 +93,9 @@ namespace Walterlv.Events
         {
         }
 
-        protected override bool PassStepCore(DelayChainNode node)
+        protected override StateStep PassStep(DeclarationChainNode node)
         {
-            return true;
+            return StateStep.Pass;
         }
     }
 }
